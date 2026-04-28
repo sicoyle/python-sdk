@@ -22,6 +22,10 @@ from dapr.ext.workflow.workflow_activity_context import WorkflowActivityContext
 from dapr.ext.workflow.workflow_runtime import WorkflowRuntime, alternate_name
 from dapr.ext.workflow.workflow_state import WorkflowState, WorkflowStatus
 
+# MCP
+from dapr.ext.workflow.mcp import DaprMCPClient, MCPToolDef, MCP_WORKFLOW_PREFIX
+from dapr.ext.workflow.mcp_schema import create_pydantic_model_from_schema
+
 __all__ = [
     'WorkflowRuntime',
     'DaprWorkflowClient',
@@ -34,4 +38,9 @@ __all__ = [
     'alternate_name',
     'RetryPolicy',
     'TaskFailedError',
+    # MCP
+    'DaprMCPClient',
+    'MCPToolDef',
+    'MCP_WORKFLOW_PREFIX',
+    'create_pydantic_model_from_schema',
 ]

@@ -112,6 +112,7 @@ class GetMetadataResponse(_message.Message):
     ACTOR_RUNTIME_FIELD_NUMBER: _builtins.int
     SCHEDULER_FIELD_NUMBER: _builtins.int
     WORKFLOWS_FIELD_NUMBER: _builtins.int
+    MCP_SERVERS_FIELD_NUMBER: _builtins.int
     id: _builtins.str
     runtime_version: _builtins.str
     @_builtins.property
@@ -137,6 +138,8 @@ class GetMetadataResponse(_message.Message):
     def scheduler(self) -> Global___MetadataScheduler: ...
     @_builtins.property
     def workflows(self) -> Global___MetadataWorkflows: ...
+    @_builtins.property
+    def mcp_servers(self) -> _containers.RepeatedCompositeFieldContainer[Global___MetadataMCPServer]: ...
     def __init__(
         self,
         *,
@@ -152,10 +155,11 @@ class GetMetadataResponse(_message.Message):
         actor_runtime: Global___ActorRuntime | None = ...,
         scheduler: Global___MetadataScheduler | None = ...,
         workflows: Global___MetadataWorkflows | None = ...,
+        mcp_servers: _abc.Iterable[Global___MetadataMCPServer] | None = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["_scheduler", b"_scheduler", "_workflows", b"_workflows", "actor_runtime", b"actor_runtime", "app_connection_properties", b"app_connection_properties", "scheduler", b"scheduler", "workflows", b"workflows"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["_scheduler", b"_scheduler", "_workflows", b"_workflows", "active_actors_count", b"active_actors_count", "actor_runtime", b"actor_runtime", "app_connection_properties", b"app_connection_properties", "enabled_features", b"enabled_features", "extended_metadata", b"extended_metadata", "http_endpoints", b"http_endpoints", "id", b"id", "registered_components", b"registered_components", "runtime_version", b"runtime_version", "scheduler", b"scheduler", "subscriptions", b"subscriptions", "workflows", b"workflows"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["_scheduler", b"_scheduler", "_workflows", b"_workflows", "active_actors_count", b"active_actors_count", "actor_runtime", b"actor_runtime", "app_connection_properties", b"app_connection_properties", "enabled_features", b"enabled_features", "extended_metadata", b"extended_metadata", "http_endpoints", b"http_endpoints", "id", b"id", "mcp_servers", b"mcp_servers", "registered_components", b"registered_components", "runtime_version", b"runtime_version", "scheduler", b"scheduler", "subscriptions", b"subscriptions", "workflows", b"workflows"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     _WhichOneofReturnType__scheduler: _TypeAlias = _typing.Literal["scheduler"]  # noqa: Y015
     _WhichOneofArgType__scheduler: _TypeAlias = _typing.Literal["_scheduler", b"_scheduler"]  # noqa: Y015
@@ -323,6 +327,22 @@ class MetadataHTTPEndpoint(_message.Message):
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___MetadataHTTPEndpoint: _TypeAlias = MetadataHTTPEndpoint  # noqa: Y015
+
+@_typing.final
+class MetadataMCPServer(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    NAME_FIELD_NUMBER: _builtins.int
+    name: _builtins.str
+    def __init__(
+        self,
+        *,
+        name: _builtins.str = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["name", b"name"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___MetadataMCPServer: _TypeAlias = MetadataMCPServer  # noqa: Y015
 
 @_typing.final
 class AppConnectionProperties(_message.Message):

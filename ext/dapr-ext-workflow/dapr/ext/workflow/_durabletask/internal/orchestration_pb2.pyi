@@ -16,10 +16,10 @@ import builtins as _builtins
 import sys
 import typing as _typing
 
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias as _TypeAlias
+if sys.version_info >= (3, 11):
+    from typing import TypeAlias as _TypeAlias, Never as _Never
 else:
-    from typing_extensions import TypeAlias as _TypeAlias
+    from typing_extensions import TypeAlias as _TypeAlias, Never as _Never
 
 if sys.version_info >= (3, 13):
     from warnings import deprecated as _deprecated
@@ -71,6 +71,46 @@ ORCHESTRATION_STATUS_PENDING: OrchestrationStatus.ValueType  # 6
 ORCHESTRATION_STATUS_SUSPENDED: OrchestrationStatus.ValueType  # 7
 ORCHESTRATION_STATUS_STALLED: OrchestrationStatus.ValueType  # 8
 Global___OrchestrationStatus: _TypeAlias = OrchestrationStatus  # noqa: Y015
+
+class _HistoryPropagationScope:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _HistoryPropagationScopeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_HistoryPropagationScope.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    HISTORY_PROPAGATION_SCOPE_NONE: _HistoryPropagationScope.ValueType  # 0
+    """No propagation. This is the default for an unset/missing field; the
+    child receives no history from the caller.
+    """
+    HISTORY_PROPAGATION_SCOPE_OWN_HISTORY: _HistoryPropagationScope.ValueType  # 1
+    """Propagate the caller's own history events only. The child does
+    not see any ancestral history (trust boundary).
+    """
+    HISTORY_PROPAGATION_SCOPE_LINEAGE: _HistoryPropagationScope.ValueType  # 2
+    """Propagate the caller's own history events AND the full ancestral
+    chain. Any propagated history this workflow received from its
+    parent is forwarded to the child.
+    """
+
+class HistoryPropagationScope(_HistoryPropagationScope, metaclass=_HistoryPropagationScopeEnumTypeWrapper):
+    """HistoryPropagationScope controls how history is propagated to a child
+    workflow or activity
+    """
+
+HISTORY_PROPAGATION_SCOPE_NONE: HistoryPropagationScope.ValueType  # 0
+"""No propagation. This is the default for an unset/missing field; the
+child receives no history from the caller.
+"""
+HISTORY_PROPAGATION_SCOPE_OWN_HISTORY: HistoryPropagationScope.ValueType  # 1
+"""Propagate the caller's own history events only. The child does
+not see any ancestral history (trust boundary).
+"""
+HISTORY_PROPAGATION_SCOPE_LINEAGE: HistoryPropagationScope.ValueType  # 2
+"""Propagate the caller's own history events AND the full ancestral
+chain. Any propagated history this workflow received from its
+parent is forwarded to the child.
+"""
+Global___HistoryPropagationScope: _TypeAlias = HistoryPropagationScope  # noqa: Y015
 
 @_typing.final
 class TaskRouter(_message.Message):
@@ -141,6 +181,7 @@ class WorkflowInstance(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["executionId", b"executionId", "instanceId", b"instanceId"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___WorkflowInstance: _TypeAlias = WorkflowInstance  # noqa: Y015
 
@@ -173,6 +214,7 @@ class TaskFailureDetails(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["errorMessage", b"errorMessage", "errorType", b"errorType", "innerFailure", b"innerFailure", "isNonRetriable", b"isNonRetriable", "stackTrace", b"stackTrace"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___TaskFailureDetails: _TypeAlias = TaskFailureDetails  # noqa: Y015
 
@@ -231,8 +273,11 @@ class RerunParentInstanceInfo(_message.Message):
         *,
         instanceID: _builtins.str = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["instanceID", b"instanceID"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___RerunParentInstanceInfo: _TypeAlias = RerunParentInstanceInfo  # noqa: Y015
 
@@ -263,6 +308,7 @@ class TraceContext(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["spanID", b"spanID", "traceParent", b"traceParent", "traceState", b"traceState"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___TraceContext: _TypeAlias = TraceContext  # noqa: Y015
 
@@ -284,8 +330,11 @@ class WorkflowState(_message.Message):
             key: _builtins.str = ...,
             value: _builtins.str = ...,
         ) -> None: ...
+        _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
         _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+        def WhichOneof(self, oneof_group: _Never) -> None: ...
 
     INSTANCEID_FIELD_NUMBER: _builtins.int
     NAME_FIELD_NUMBER: _builtins.int
@@ -352,5 +401,6 @@ class WorkflowState(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["completedTimestamp", b"completedTimestamp", "createdTimestamp", b"createdTimestamp", "customStatus", b"customStatus", "executionId", b"executionId", "failureDetails", b"failureDetails", "input", b"input", "instanceId", b"instanceId", "lastUpdatedTimestamp", b"lastUpdatedTimestamp", "name", b"name", "output", b"output", "parentInstanceId", b"parentInstanceId", "scheduledStartTimestamp", b"scheduledStartTimestamp", "tags", b"tags", "version", b"version", "workflowStatus", b"workflowStatus"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___WorkflowState: _TypeAlias = WorkflowState  # noqa: Y015
