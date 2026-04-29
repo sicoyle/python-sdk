@@ -20,8 +20,7 @@ import uuid
 from typing import Optional, Set
 
 from dapr.ext.workflow.aio.dapr_workflow_client import DaprWorkflowClient
-import dapr.ext.workflow._durabletask.internal.protos as pb
-from dapr.ext.workflow.mcp import MCP_WORKFLOW_PREFIX, _DaprMCPClientBase, _MCP_METHOD_SUFFIX
+from dapr.ext.workflow.mcp import MCP_WORKFLOW_PREFIX, _DaprMCPClientBase, _MCP_METHOD_LIST_TOOLS
 from dapr.ext.workflow.workflow_state import WorkflowStatus
 
 logger = logging.getLogger(__name__)
@@ -81,7 +80,7 @@ class DaprMCPClient(_DaprMCPClientBase):
 
         instance_id = str(uuid.uuid4())
         # TODO(@sicoyle): reminder to add a func like I have in durabletask-go to use for here instead of building like this!
-        workflow_name = f"{MCP_WORKFLOW_PREFIX}{mcpserver_name}{_MCP_METHOD_SUFFIX[pb.MCP_METHOD_LIST_TOOLS]}"
+        workflow_name = f"{MCP_WORKFLOW_PREFIX}{mcpserver_name}{_MCP_METHOD_LIST_TOOLS}"
 
         logger.debug(
             "Scheduling %s (instance=%s)", workflow_name, instance_id

@@ -37,23 +37,18 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Set
 
-import dapr.ext.workflow._durabletask.internal.protos as pb
 from dapr.ext.workflow.dapr_workflow_client import DaprWorkflowClient
 from dapr.ext.workflow.workflow_state import WorkflowStatus
 
 logger = logging.getLogger(__name__)
 
-_NAMESPACE_PREFIX = {
-    pb.IN_PROCESS_WORKFLOW_MCP: "dapr.internal.mcp.",
-}
-
-_MCP_METHOD_SUFFIX = {
-    pb.MCP_METHOD_LIST_TOOLS: ".ListTools",
-    pb.MCP_METHOD_CALL_TOOL: ".CallTool",
-}
-
-MCP_WORKFLOW_PREFIX: str = _NAMESPACE_PREFIX[pb.IN_PROCESS_WORKFLOW_MCP]
+# MCP workflow name constants — mirrors the proto enums in
+# dapr/dapr/dapr/proto/workflows/v1/mcp.proto as plain strings.
+MCP_WORKFLOW_PREFIX: str = "dapr.internal.mcp."
 """Prefix for all built-in MCP workflow orchestrations."""
+
+_MCP_METHOD_LIST_TOOLS = ".ListTools"
+_MCP_METHOD_CALL_TOOL = ".CallTool"
 
 
 # TODO(@sicoyle): see if I can use the mcp pkg class instead for this?
@@ -70,7 +65,7 @@ class MCPToolDef:
         input_schema: JSON Schema dict describing the tool's input parameters.
         server_name: Name of the Dapr ``MCPServer`` resource that hosts this tool.
         call_tool_workflow: Pre-computed workflow name for invoking this tool
-            (e.g. ``dapr.internal.mcp.weather.CallTool``).
+            (e.g. ``dapr.internal.mcp.weather.CallTool.get_weather``).
     """
 
     name: str
@@ -107,15 +102,15 @@ class _DaprMCPClientBase:
                 f"malformed JSON: {exc}"
             ) from exc
 
-        # TODO(@sicoyle): update this to use a common func instead of manually building...
-        call_tool_wf = f"{MCP_WORKFLOW_PREFIX}{mcpserver_name}{_MCP_METHOD_SUFFIX[pb.MCP_METHOD_CALL_TOOL]}"
-
         tools: List[MCPToolDef] = []
         for tool_def in result.get("tools", []):
             name = tool_def.get("name", "")
             if self._allowed_tools is not None and name not in self._allowed_tools:
                 logger.debug("Skipping tool '%s' (not in allowed_tools)", name)
                 continue
+            # Workflow name includes the tool name for per-tool observability:
+            # dapr.internal.mcp.<server>.CallTool.<tool>
+            call_tool_wf = f"{MCP_WORKFLOW_PREFIX}{mcpserver_name}{_MCP_METHOD_CALL_TOOL}.{name}"
             tools.append(
                 MCPToolDef(
                     name=name,
@@ -211,7 +206,7 @@ class DaprMCPClient(_DaprMCPClientBase):
 
         instance_id = str(uuid.uuid4())
         # TODO(@sicoyle): reminder to add a func like I have in durabletask-go to use for here instead of building like this!
-        workflow_name = f"{MCP_WORKFLOW_PREFIX}{mcpserver_name}{_MCP_METHOD_SUFFIX[pb.MCP_METHOD_LIST_TOOLS]}"
+        workflow_name = f"{MCP_WORKFLOW_PREFIX}{mcpserver_name}{_MCP_METHOD_LIST_TOOLS}"
 
         logger.debug(
             "Scheduling %s (instance=%s)", workflow_name, instance_id

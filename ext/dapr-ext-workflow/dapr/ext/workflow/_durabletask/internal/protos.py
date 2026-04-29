@@ -23,4 +23,3 @@ from dapr.ext.workflow._durabletask.internal.orchestration_pb2 import *  # noqa:
 from dapr.ext.workflow._durabletask.internal.history_events_pb2 import *  # noqa: F401, F403
 from dapr.ext.workflow._durabletask.internal.orchestrator_actions_pb2 import *  # noqa: F401, F403
 from dapr.ext.workflow._durabletask.internal.orchestrator_service_pb2 import *  # noqa: F401, F403
-from dapr.ext.workflow._durabletask.internal.mcp_pb2 import *  # noqa: F401, F403
